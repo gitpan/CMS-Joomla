@@ -1,0 +1,37 @@
+CMS::Joomla
+===========
+
+This module provides an interface for reading Joomla! CMS configuration
+variables and connecting to the Joomla! database from Perl script.
+
+INSTALLATION
+
+To install this module, run the following commands:
+
+	perl Makefile.PL
+	make
+	make install
+
+SUPPORT AND DOCUMENTATION
+
+After installing, you can find documentation for this module with the
+perldoc command.
+
+    perldoc CMS::Joomla
+
+You can also look for information at:
+
+    Search CPAN:
+        http://search.cpan.org/dist/CMS-Joomla
+
+    Example programs:
+        http://dist.epipe.com/joomla/perl/
+
+
+COPYRIGHT AND LICENCE
+
+Copyright (c) 2008 EPIPE Communications <http://epipe.com/>
+
+This program is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.
+
