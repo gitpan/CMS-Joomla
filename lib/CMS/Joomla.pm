@@ -12,10 +12,11 @@ package CMS::Joomla;
 use warnings;
 use strict;
 
+use Carp;
 use DBI;
 use IO::File;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 =head1 NAME
 
@@ -35,9 +36,9 @@ Read Joomla! configuration variables:
 
 Access Joomla! database:
 
-    my ($jdb) = $joomla->dbhandle(undef);
+    my ($jdb) = $joomla->dbhandle( { AutoCommit => 1 } );
     my ($sth) = $jdb->prepare("SELECT introtext "
-	. "FROM " . $joomla->cfg->{'dbprefix'} . "content "
+	. "FROM " . $joomla->dbprefix . "content "
 	. "WHERE title=?");
 
     $sth->execute("about");
@@ -76,7 +77,7 @@ sub new ($$) {
 
 =head1 METHODS
 
-=head2 cfg(I<>)
+=head2 cfg()
 
 Return a reference to a hash containing all Joomla! configuration
 variables in this C<CMS::Joomla> object. 
@@ -106,6 +107,28 @@ Returns undef in case of error.
 sub dbhandle ($$) {
   my $self = shift;
   my $opt = shift;
+
+  if (!defined($self->{'cfg'}->{'dbtype'})) {
+    carp "Joomla! database type is not defined";
+    return undef;
+  }
+  if (!defined($self->{'cfg'}->{'db'})) {
+    carp "Joomla! database name is not defined";
+    return undef;
+  }
+  if (!defined($self->{'cfg'}->{'host'})) {
+    carp "Joomla! database host is not defined";
+    return undef;
+  }
+  if (!defined($self->{'cfg'}->{'user'})) {
+    carp "Joomla! database user is not defined";
+    return undef;
+  }
+  if (!defined($self->{'cfg'}->{'password'})) {
+    carp "Joomla! database password is not defined";
+    return undef;
+  }
+
   my $dbtype = $self->{'cfg'}->{'dbtype'};
 
   $dbtype =~ s/mysqli/mysql/;
@@ -120,20 +143,36 @@ sub dbhandle ($$) {
   return $self->{'_dbhandle'};
 }
 
+=head2 dbprefix()
+
+Return a reference to the Joomla! database prefix. This is effectively
+a shortcut for C<$joomla-E<gt>cfg-E<gt>{'dbprefix'}>.
+
+=cut
+
+sub dbprefix ($) {
+  my $self = shift;
+
+  return $self->{'cfg'}->{'dbprefix'};
+}
+
+
+=head1 EXAMPLES
+
+Some functional example scripts are available at:
+
+L<http://dist.epipe.com/joomla/perl/>
+
 
 =head1 SEE ALSO
 
-L<DBI>, L<DBD::mysql>, L<http://dist.epipe.com/joomla/perl/>
-
-
-=head1 AUTHOR
-
-EPIPE Communications E<lt>epipe at cpan.orgE<gt> L<http://epipe.com/>
+L<DBI>, L<DBD::mysql>, L<http://www.joomla.org/>
 
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright (c) 2008 EPIPE Communications L<http://epipe.com/>
+Copyright (c) 2008 EPIPE Communications E<lt>epipe at cpan.orgE<gt> 
+L<http://epipe.com/>
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
@@ -141,10 +180,14 @@ under the same terms as Perl itself.
 
 =cut
 
-sub _probephp {
-  my ($r) = `php -v`;
-  if (defined($r) && $r =~ /PHP/) {
-    # have php command-line binary
+# internal methods follow
+
+sub _probephp ($) {
+  # simple test to see if we have a working PHP command line program
+  my ($r) = `php -r 'echo strrev("raboof") . "\n";'`;
+
+ if (defined($r) && $r =~ /foobar/) {
+    # have PHP command-line binary
     return 1;
   }
   # no have
@@ -191,7 +234,7 @@ sub _jcfgread_kludge ($$) {
 
   $str = join('', $fh->getlines());
 
-  while ($str =~ /^\s*var\s+\$(\w+)\s+=\s+\'([^\']*?)\'\;\s*$/m) {
+  while ($str =~ /^\s*var\s+\$(\w+)\s+=\s+\'([^\']*?)\'\;/m) {
     $cfg{$1} = $2;
     $str = $';
   }

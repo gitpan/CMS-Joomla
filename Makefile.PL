@@ -5,6 +5,8 @@ use ExtUtils::MakeMaker;
 WriteMakefile(
     NAME                => 'CMS::Joomla',
     AUTHOR              => 'EPIPE Communications <epipe at cpan.org>',
+  ($ExtUtils::MakeMaker::VERSION >= 6.3002 ?
+    ('LICENSE'          => 'perl', ) : ()),
     VERSION_FROM        => 'lib/CMS/Joomla.pm',
     ABSTRACT_FROM       => 'lib/CMS/Joomla.pm',
     PL_FILES            => {},

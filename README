@@ -2,7 +2,8 @@ CMS::Joomla
 ===========
 
 This module provides an interface for reading Joomla! CMS configuration
-variables and connecting to the Joomla! database from Perl script.
+variables and connecting to the Joomla! database from a Perl script.
+
 
 INSTALLATION
 
@@ -10,7 +11,17 @@ To install this module, run the following commands:
 
 	perl Makefile.PL
 	make
+	make test
 	make install
+
+You can install the module directly from CPAN by typing:
+
+	perl -MCPAN -e "install CMS::Joomla"
+
+Or if you use ppm you can type:
+
+	ppm install CMS::Joomla 
+
 
 SUPPORT AND DOCUMENTATION
 
@@ -21,8 +32,8 @@ perldoc command.
 
 You can also look for information at:
 
-    Search CPAN:
-        http://search.cpan.org/dist/CMS-Joomla
+    Module documentation in CPAN:
+        http://search.cpan.org/dist/CMS-Joomla/lib/CMS/Joomla.pm
 
     Example programs:
         http://dist.epipe.com/joomla/perl/
