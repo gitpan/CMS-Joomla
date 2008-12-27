@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               CMS-Joomla
-version:            0.02
+version:            0.03
 abstract:           Joomla! CMS configuration and database access Perl module
 author:
     - EPIPE Communications <epipe at cpan.org>

@@ -16,7 +16,7 @@ use Carp;
 use DBI;
 use IO::File;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 =head1 NAME
 
@@ -183,8 +183,13 @@ under the same terms as Perl itself.
 # internal methods follow
 
 sub _probephp ($) {
-  # simple test to see if we have a working PHP command line program
-  my ($r) = `php -r 'echo strrev("raboof") . "\n";'`;
+
+  # Simple test to see if we have a working PHP command line program.
+  # The sub-shell re-direction is there to avoid "php: not found"
+  # error messages (which are not relevant as we resort to internal
+  # parser in case the PHP command line binary does not exist).
+
+  my ($r) = `(php -r 'echo strrev("raboof") . "\n";') 2> /dev/null`;
 
  if (defined($r) && $r =~ /foobar/) {
     # have PHP command-line binary
@@ -211,7 +216,7 @@ sub _jcfgread_cmdline ($$) {
   
   my $r = `php -r '$php'`;
 
-  return undef unless $r;
+  return undef unless defined($r) && $? == 0;
 
   while ($r =~ /^(\w+): \"([^\"]*?)\"$/m) {
     $cfg{$1} = $2;
@@ -256,7 +261,6 @@ sub _jcfgread ($$) {
     # phptype is 0 or unknown, use internal parser kludge
     return $self->_jcfgread_kludge($cfgname);
   }
-
 }
 
 1; # End of CMS::Joomla
