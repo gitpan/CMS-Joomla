@@ -1,7 +1,7 @@
 #
 # CMS::Joomla - Joomla! CMS configuration and database access Perl module
 #
-# Copyright (c) 2008 EPIPE Communications <http://epipe.com/>
+# Copyright (c) 2008, 2011 EPIPE Communications <http://epipe.com/>
 # 
 # This program is free software; you can redistribute it and/or modify it
 # under the same terms as Perl itself.
@@ -16,7 +16,7 @@ use Carp;
 use DBI;
 use IO::File;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 =head1 NAME
 
@@ -171,7 +171,7 @@ L<DBI>, L<DBD::mysql>, L<http://www.joomla.org/>
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright (c) 2008 EPIPE Communications E<lt>epipe at cpan.orgE<gt> 
+Copyright (c) 2008, 2011 EPIPE Communications E<lt>epipe at cpan.orgE<gt> 
 L<http://epipe.com/>
 
 This program is free software; you can redistribute it and/or modify it
@@ -239,8 +239,8 @@ sub _jcfgread_kludge ($$) {
 
   $str = join('', $fh->getlines());
 
-  while ($str =~ /^\s*var\s+\$(\w+)\s+=\s+\'([^\']*?)\'\;/m) {
-    $cfg{$1} = $2;
+  while ($str =~ /^\s*(var|public)\s+\$(\w+)\s+=\s+\'([^\']*?)\'\;/m) {
+    $cfg{$2} = $3;
     $str = $';
   }
   return \%cfg;

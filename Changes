@@ -1,5 +1,11 @@
 Revision history for CMS::Joomla
 
+0.04	2011-09-13
+
+	* Added support and tests for Joomla! 1.7 configuration file
+	format.
+
+
 0.03    2008-12-27
 
 	* Removed display of "php: not found" error messages when
